@@ -1,0 +1,68 @@
+def moduleProjects() {
+    subprojects.findAll { subproject ->
+        subproject.subprojects.size() == 0 &&
+        subproject.path.startsWith(":modules:")
+    }
+}
+
+// Configures all the module projects
+configure(moduleProjects()) {
+    // Add a bunch of plugins
+    apply plugin: "java"
+    
+    // Due to a complication in the Liferay BOMS enforce version 3.0.1 of the
+    // Servlet API to be used everywhere
+    configurations.compileClasspath.resolutionStrategy.dependencySubstitution {
+            substitute(module("javax.servlet:javax.servlet-api"))
+                .because("Liferay actually exports the servlet packages at version 3.0.0")
+                .with(module("javax.servlet:javax.servlet-api:3.0.1"))
+	}
+	
+	// Enable deployment of any dependencies which are not provided by the portal
+    afterEvaluate { project ->
+        if (deploy.enabled) {
+            deploy.doLast {
+                configurations.default.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+                    if (artifact.extension == 'jar') {
+                        logger.lifecycle "deployed >> {}", artifact
+                        project.copy {
+                            from artifact.file
+                            into project.deploy.destinationDir
+                            rename { "${artifact.name}.${artifact.extension}" }
+                        }
+                    }
+                }
+            }
+            clean.doLast {
+                configurations.default.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+                    if (artifact.extension == 'jar') {
+                        logger.lifecycle "cleaned >> {}", artifact
+                        project.delete {
+                            delete file("${project.deploy.destinationDir}/${artifact.name}.${artifact.extension}")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+	targetPlatformBoms group: "com.liferay", name: "workspace-bom", version: "1.0.0"
+	
+}
+
+allprojects {
+
+
+	repositories {
+		maven {
+			url rootProject.file("repo").toURI()
+		}
+	}
+
+}
+
+
+
+
