@@ -1,0 +1,6 @@
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "release.portal.api"
+    
+	compileOnly group: "org.osgi", name: "osgi.cmpn"
+    compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib"
+}
