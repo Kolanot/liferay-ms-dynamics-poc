@@ -37,53 +37,23 @@ public class MSGetAccountsCommand {
 		System.out.println("TOKEN: " + msDynamicsConfiguration.microsoftDynamicsOAuth2Token());
 		System.out.println("HOST: " + msDynamicsConfiguration.microsoftDynamicsHost());
 		
-		System.out.println(getAccounts(msDynamicsConfiguration.microsoftDynamicsHost(), msDynamicsConfiguration.microsoftDynamicsOAuth2Token()));
-		
-	}
-	
-	private String getAccounts(String host, String token)  {
-
 		IMSDynamicsResource.Builder builder = IMSDynamicsResource.builder();
-
-		// TODO Send all this to the REST resource
-		builder.endpoint(host + "/api/data/v9.0/accounts", -1, "https");
-		
-		// Set authoriaztion
-		builder.authentication(token);
-
-		// Set header content of post request.
-		builder.header("OData-MaxVersion", "4.0");
-		builder.header("OData-Version", "4.0");
-		builder.header("Content-Type", "application/json");
-		builder.header("Host", host);
-//		builder.header("User-Agent", "PostmanRuntime/7.24.0");
-		builder.header("Accept", "*/*");
-//		builder.header("Accept-Encoding", "gzip, deflate, br");
-//		builder.header("Connection", "keep-alive");
-//		builder.header("Postman-Token", "068ff986-822c-428f-8d13-46c3176298c3");
-//		builder.header("Cookie", "ARRAffinity=0ee99854aa933c9667ea58c0c10ac070465ba8e1f711ec984f2f645f512e5531; ReqClientId=3643a996-144c-4081-8813-cf8c3e321775; orgId=4bf9de81-9ab3-45a1-8359-c62413965a34");
-
 		IMSDynamicsResource imsDynamicsResource = builder.build();
-
-		// Set body content of post request.
-		// No need to set info in the body for this case
-		
 		MSDynamicsResponse msDynamicsResponse;
 		
-
 		try {
 
-			msDynamicsResponse = imsDynamicsResource.getMSDynamicsAccounts();
+			msDynamicsResponse = imsDynamicsResource.getMSDynamicsAccounts(msDynamicsConfiguration.microsoftDynamicsHost(), msDynamicsConfiguration.microsoftDynamicsOAuth2Token());
+			System.out.println(msDynamicsResponse.getMessage());
 
 		} catch (Exception e) {
 			_log.error(e.getMessage());
 			_log.error(e);
-			return null;
 		}
 		
-		return msDynamicsResponse.getMessage();
+		
 	}
-
+	
 	
 	@Reference
 	protected ConfigurationProvider _configurationProvider;

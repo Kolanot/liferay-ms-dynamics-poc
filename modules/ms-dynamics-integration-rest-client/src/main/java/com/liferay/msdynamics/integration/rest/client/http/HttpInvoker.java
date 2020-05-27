@@ -72,15 +72,14 @@ public class HttpInvoker {
 	}
 
 	public HttpInvoker multipart() {
-		_contentType =
-			"multipart/form-data; charset=utf-8; boundary=__MULTIPART_BOUNDARY__";
+		_contentType = "multipart/form-data; charset=utf-8; boundary=__MULTIPART_BOUNDARY__";
 		_multipartBoundary = "__MULTIPART_BOUNDARY__";
 
 		return this;
 	}
 
 	public HttpInvoker parameter(String name, String value) {
-		return parameter(name, new String[] {value});
+		return parameter(name, new String[] { value });
 	}
 
 	public HttpInvoker parameter(String name, String[] values) {
@@ -90,12 +89,10 @@ public class HttpInvoker {
 			String[] newValues = new String[oldValues.length + values.length];
 
 			System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
-			System.arraycopy(
-				values, 0, newValues, oldValues.length, values.length);
+			System.arraycopy(values, 0, newValues, oldValues.length, values.length);
 
 			_parameters.put(name, newValues);
-		}
-		else {
+		} else {
 			_parameters.put(name, values);
 		}
 
@@ -124,22 +121,19 @@ public class HttpInvoker {
 		return this;
 	}
 
-	public HttpInvoker userNameAndPassword(String userNameAndPassword)
-		throws IOException {
+	public HttpInvoker userNameAndPassword(String userNameAndPassword) throws IOException {
 
 		Base64.Encoder encoder = Base64.getEncoder();
 
-		_encodedUserNameAndPassword = new String(
-			encoder.encode(userNameAndPassword.getBytes("UTF-8")), "UTF-8");
+		_encodedUserNameAndPassword = new String(encoder.encode(userNameAndPassword.getBytes("UTF-8")), "UTF-8");
 
 		return this;
 	}
 
-	public HttpInvoker token(String token)
-			throws IOException {
-		
+	public HttpInvoker token(String token) throws IOException {
+
 		_token = token;
-		
+
 		return this;
 	}
 
@@ -183,19 +177,16 @@ public class HttpInvoker {
 
 	private static void _updateHttpURLConnectionClass() {
 		try {
-			Field methodsField = HttpURLConnection.class.getDeclaredField(
-				"methods");
+			Field methodsField = HttpURLConnection.class.getDeclaredField("methods");
 
 			methodsField.setAccessible(true);
 
 			Field modifiersField = Field.class.getDeclaredField("modifiers");
 
 			modifiersField.setAccessible(true);
-			modifiersField.setInt(
-				methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
+			modifiersField.setInt(methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
 
-			Set<String> methodsFieldValue = new LinkedHashSet<>(
-				Arrays.asList((String[])methodsField.get(null)));
+			Set<String> methodsFieldValue = new LinkedHashSet<>(Arrays.asList((String[]) methodsField.get(null)));
 
 			if (methodsFieldValue.contains("PATCH")) {
 				return;
@@ -204,8 +195,7 @@ public class HttpInvoker {
 			methodsFieldValue.add("PATCH");
 
 			methodsField.set(null, methodsFieldValue.toArray(new String[0]));
-		}
-		catch (IllegalAccessException | NoSuchFieldException e) {
+		} catch (IllegalAccessException | NoSuchFieldException e) {
 			_logger.warning("Unable to update HttpURLConnection class");
 		}
 	}
@@ -215,10 +205,8 @@ public class HttpInvoker {
 		this._token = null;
 	}
 
-	private void _appendPart(
-			OutputStream outputStream, PrintWriter printWriter, String key,
-			Object value)
-		throws IOException {
+	private void _appendPart(OutputStream outputStream, PrintWriter printWriter, String key, Object value)
+			throws IOException {
 
 		printWriter.append("\r\n--");
 		printWriter.append(_multipartBoundary);
@@ -227,13 +215,12 @@ public class HttpInvoker {
 		printWriter.append("\";");
 
 		if (value instanceof File) {
-			File file = (File)value;
+			File file = (File) value;
 
 			printWriter.append(" filename=\"");
 			printWriter.append(file.getName());
 			printWriter.append("\"\r\nContent-Type: ");
-			printWriter.append(
-				URLConnection.guessContentTypeFromName(file.getName()));
+			printWriter.append(URLConnection.guessContentTypeFromName(file.getName()));
 			printWriter.append("\r\n\r\n");
 
 			printWriter.flush();
@@ -249,8 +236,7 @@ public class HttpInvoker {
 			outputStream.flush();
 
 			fileInputStream.close();
-		}
-		else {
+		} else {
 			printWriter.append("\r\n\r\n");
 			printWriter.append(value.toString());
 		}
@@ -309,18 +295,15 @@ public class HttpInvoker {
 
 		URL url = new URL(urlString);
 
-		HttpURLConnection httpURLConnection =
-			(HttpURLConnection)url.openConnection();
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
 		httpURLConnection.setRequestMethod(_httpMethod.name());
 
 		if (_encodedUserNameAndPassword != null) {
-			httpURLConnection.setRequestProperty(
-				"Authorization", "Basic " + _encodedUserNameAndPassword);
+			httpURLConnection.setRequestProperty("Authorization", "Basic " + _encodedUserNameAndPassword);
 		}
 		if (_token != null) {
-			httpURLConnection.setRequestProperty(
-					"Authorization", "Bearer " + _token);
+			httpURLConnection.setRequestProperty("Authorization", "Bearer " + _token);
 		}
 
 		if (_contentType != null) {
@@ -328,8 +311,7 @@ public class HttpInvoker {
 		}
 
 		for (Map.Entry<String, String> header : _headers.entrySet()) {
-			httpURLConnection.setRequestProperty(
-				header.getKey(), header.getValue());
+			httpURLConnection.setRequestProperty(header.getKey(), header.getValue());
 		}
 
 		_writeBody(httpURLConnection);
@@ -337,8 +319,7 @@ public class HttpInvoker {
 		return httpURLConnection;
 	}
 
-	private String _readResponse(HttpURLConnection httpURLConnection)
-		throws IOException {
+	private String _readResponse(HttpURLConnection httpURLConnection) throws IOException {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -348,61 +329,53 @@ public class HttpInvoker {
 
 		if (responseCode > 299) {
 			inputStream = httpURLConnection.getErrorStream();
-		}
-		else {
+		} else {
 			inputStream = httpURLConnection.getInputStream();
 		}
 
-		BufferedReader bufferedReader = new BufferedReader(
-			new InputStreamReader(inputStream));
+		if (inputStream != null) {
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-		while (true) {
-			String line = bufferedReader.readLine();
+			while (true) {
+				String line = bufferedReader.readLine();
 
-			if (line == null) {
-				break;
+				if (line == null) {
+					break;
+				}
+
+				sb.append(line);
 			}
-
-			sb.append(line);
+			
+			bufferedReader.close();
 		}
-
-		bufferedReader.close();
 
 		return sb.toString();
 	}
 
-	private void _writeBody(HttpURLConnection httpURLConnection)
-		throws IOException {
+	private void _writeBody(HttpURLConnection httpURLConnection) throws IOException {
 
 		if ((_body == null) && _files.isEmpty() && _parts.isEmpty()) {
 			return;
 		}
 
-		if ((_httpMethod == HttpMethod.DELETE) ||
-			(_httpMethod == HttpMethod.GET)) {
+		if ((_httpMethod == HttpMethod.DELETE) || (_httpMethod == HttpMethod.GET)) {
 
-			throw new IllegalArgumentException(
-				"HTTP method " + _httpMethod + " must not contain a body");
+			throw new IllegalArgumentException("HTTP method " + _httpMethod + " must not contain a body");
 		}
 
 		httpURLConnection.setDoOutput(true);
 
 		OutputStream outputStream = httpURLConnection.getOutputStream();
 
-		try (PrintWriter printWriter = new PrintWriter(
-				new OutputStreamWriter(outputStream, "UTF-8"), true)) {
+		try (PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true)) {
 
 			if (_contentType.startsWith("multipart/form-data")) {
 				for (Map.Entry<String, String> entry : _parts.entrySet()) {
-					_appendPart(
-						outputStream, printWriter, entry.getKey(),
-						entry.getValue());
+					_appendPart(outputStream, printWriter, entry.getKey(), entry.getValue());
 				}
 
 				for (Map.Entry<String, File> entry : _files.entrySet()) {
-					_appendPart(
-						outputStream, printWriter, entry.getKey(),
-						entry.getValue());
+					_appendPart(outputStream, printWriter, entry.getKey(), entry.getValue());
 				}
 
 				printWriter.append("--" + _multipartBoundary + "--");
@@ -410,8 +383,7 @@ public class HttpInvoker {
 				printWriter.flush();
 
 				outputStream.flush();
-			}
-			else {
+			} else {
 				printWriter.append(_body);
 
 				printWriter.flush();
@@ -419,8 +391,7 @@ public class HttpInvoker {
 		}
 	}
 
-	private static final Logger _logger = Logger.getLogger(
-		HttpInvoker.class.getName());
+	private static final Logger _logger = Logger.getLogger(HttpInvoker.class.getName());
 
 	private String _body;
 	private String _contentType;

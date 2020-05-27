@@ -23,7 +23,7 @@ public interface IMSDynamicsResource {
 		return new Builder();
 	}
 	
-	public MSDynamicsResponse getMSDynamicsAccounts() throws Exception;
+	public MSDynamicsResponse getMSDynamicsAccounts(String host, String token) throws Exception;
 
 //	public MSDynamicsResponse postIMediaResponse(MSDynamicsResponse iMediaResponse) throws Exception;
 //
@@ -92,11 +92,30 @@ public interface IMSDynamicsResource {
 
 	public static class MSDynamicsResourceImpl implements IMSDynamicsResource {
 		
+		private static final String API_ENDPOINT = "/api/data/v9.0/";
+		private static final String RESOURCE_ACCOUNT = "accounts";
 		
 
-		public MSDynamicsResponse getMSDynamicsAccounts() throws Exception {
+		public MSDynamicsResponse getMSDynamicsAccounts(String host, String token) throws Exception {
 			
-			HttpInvoker.HttpResponse httpResponse = getMSDynamicsAccountsHttpResponse();
+			// Setup the request
+			_builder.endpoint(host + API_ENDPOINT + RESOURCE_ACCOUNT, -1, "https");
+			
+			// Set authoriaztion
+			_builder.authentication(token);
+
+			// Set header content of post request.
+			_builder.header("OData-MaxVersion", "4.0");
+			_builder.header("OData-Version", "4.0");
+			_builder.header("Content-Type", "application/json");
+			_builder.header("Host", host);
+			_builder.header("Accept", "*/*");
+
+			// Set body content of post request.
+			// No need to set info in the body for this case
+			
+
+			HttpInvoker.HttpResponse httpResponse = getMSDynamicsHttpResponse();
 			
 			String content = httpResponse.getContent();
 			
@@ -117,28 +136,9 @@ public interface IMSDynamicsResource {
 			
 		}
 		
-//		public MSDynamicsResponse postIMediaResponse(MSDynamicsResponse iMediaResponse) throws Exception {
-//
-//			HttpInvoker.HttpResponse httpResponse = postIMediaResponseHttpResponse(iMediaResponse);
-//
-//			String content = httpResponse.getContent();
-//
-//			_logger.fine("HTTP response content: " + content);
-//			_logger.fine("HTTP response message: " + httpResponse.getMessage());
-//			_logger.fine("HTTP response status code: " + httpResponse.getStatusCode());
-//
-//			if (httpResponse.getStatusCode() != 200) {
-//				throw new RestException("HTTP Status Code: " + httpResponse.getStatusCode()
-//						+ ". HTTP Response Message: " + httpResponse.getMessage() + ". Response Content: " + content);
-//			}
-//
-//			// Persist Result from jitterbit.
-//			iMediaResponse.setMessage(httpResponse.getStatusCode() + httpResponse.getMessage() + content);
-//			return iMediaResponse;
-//
-//		}
-
-		public HttpInvoker.HttpResponse getMSDynamicsAccountsHttpResponse() throws Exception {
+		
+		
+		public HttpInvoker.HttpResponse getMSDynamicsHttpResponse() throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
 

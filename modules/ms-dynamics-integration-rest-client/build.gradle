@@ -5,5 +5,4 @@ dependencies {
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel"	
 
-	compile project(":modules:ms-dynamics-config")
 }
