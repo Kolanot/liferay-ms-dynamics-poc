@@ -1,9 +1,13 @@
 package ms.dynamics.accounts.portlet.portlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
+import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
@@ -18,13 +22,18 @@ import com.liferay.msdynamics.integration.config.MSDynamicsConfiguration;
 import com.liferay.msdynamics.integration.rest.client.dto.v1_0.MSDynamicsResponse;
 import com.liferay.msdynamics.integration.rest.client.exception.RestException;
 import com.liferay.msdynamics.integration.rest.client.resource.v1_0.IMSDynamicsResource;
+import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import ms.dynamics.accounts.portlet.constants.MsDynamicsAccountsPortletKeys;
+import ms.dynamics.accounts.portlet.data.MSAccount;
 
 /**
  * @author fafonso
@@ -32,7 +41,7 @@ import ms.dynamics.accounts.portlet.constants.MsDynamicsAccountsPortletKeys;
 @Component(
 	immediate = true,
 	property = {
-		"com.liferay.portlet.display-category=category.sample",
+		"com.liferay.portlet.display-category=category.ms",
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.instanceable=true",
 		"javax.portlet.display-name=MsDynamicsAccounts",
@@ -66,15 +75,39 @@ public class MsDynamicsAccountsPortlet extends MVCPortlet {
 			_log.error(e.getMessage(), e);
 		}
 		
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+		renderRequest.setAttribute("currentUrl", themeDisplay.getURLCurrent());
+		
 		if (msDynamicsResponse != null) {
-			parseMSDynamicsAccounts(msDynamicsResponse.getContent());
+			List<MSAccount> accounts = parseMSDynamicsAccounts(msDynamicsResponse.getContent());
+
+			PortletURL iteratorURL= renderResponse.createRenderURL();
+
+			List<String> headerNames = Collections.emptyList();
+
+			String emptyResultsMessage = LanguageUtil.get(themeDisplay.getLocale(), "no-accounts-were-found");
+
+			SearchContainer<MSAccount> searchContainer =
+				new SearchContainer<>(
+					renderRequest, iteratorURL, headerNames, emptyResultsMessage);
+
+			
+			searchContainer.setResults(accounts);
+			searchContainer.setTotal(accounts.size());
+
+			renderRequest.setAttribute("accountsSearchContainer", searchContainer);
 		}
+		
+		
 		
 	}
 	
-	private void parseMSDynamicsAccounts(String content) {
+	private List<MSAccount> parseMSDynamicsAccounts(String content) {
+		List<MSAccount> result = new ArrayList<MSAccount>();
+		
 		if (StringUtils.isEmpty(content)) {
-			return;
+			return result;
 		}
 		
 		JsonParser parser = new JsonParser();
@@ -88,14 +121,20 @@ public class MsDynamicsAccountsPortlet extends MVCPortlet {
 		    JsonElement accounts = jsonObject.get("value");
 
 		    if(accounts.isJsonArray()){
-		    		for (JsonElement account : accounts.getAsJsonArray()) {
+		    		for (JsonElement accountJsonElement : accounts.getAsJsonArray()) {
+		    			MSAccount account = new MSAccount(accountJsonElement);
 		    			
-		    			_log.info(account.getAsJsonObject().get("name"));
+		    			if (_log.isDebugEnabled()) {
+		    				_log.debug(account);
+		    			}
+		    			
+		    			result.add(account);
 		    		}
 		    }
 
 		}
 		
+		return result;
 	}
 	
 	@Reference

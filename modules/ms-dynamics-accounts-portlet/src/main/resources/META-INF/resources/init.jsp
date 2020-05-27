@@ -7,6 +7,12 @@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
-<liferay-theme:defineObjects />
+<%@ page import="com.liferay.portal.kernel.language.LanguageUtil"%>
+<%@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %>
 
+<%@ page import="ms.dynamics.accounts.portlet.constants.MsDynamicsAccountsPortletKeys" %>
+
+<liferay-theme:defineObjects />
+<liferay-frontend:defineObjects />
 <portlet:defineObjects />
+
