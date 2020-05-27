@@ -1,5 +1,6 @@
 package com.liferay.msdynamics.integration.rest.client.resource.v1_0;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -23,7 +24,7 @@ public interface IMSDynamicsResource {
 		return new Builder();
 	}
 	
-	public MSDynamicsResponse getMSDynamicsAccounts(String host, String token) throws Exception;
+	public MSDynamicsResponse getMSDynamicsAccounts(String host, String token) throws IOException, RestException;
 
 //	public MSDynamicsResponse postIMediaResponse(MSDynamicsResponse iMediaResponse) throws Exception;
 //
@@ -96,7 +97,7 @@ public interface IMSDynamicsResource {
 		private static final String RESOURCE_ACCOUNT = "accounts";
 		
 
-		public MSDynamicsResponse getMSDynamicsAccounts(String host, String token) throws Exception {
+		public MSDynamicsResponse getMSDynamicsAccounts(String host, String token) throws IOException, RestException {
 			
 			// Setup the request
 			_builder.endpoint(host + API_ENDPOINT + RESOURCE_ACCOUNT, -1, "https");
@@ -117,28 +118,26 @@ public interface IMSDynamicsResource {
 
 			HttpInvoker.HttpResponse httpResponse = getMSDynamicsHttpResponse();
 			
-			String content = httpResponse.getContent();
 			
 			if (_log.isDebugEnabled()) {
-				_log.debug("HTTP response content: " + content);
+				_log.debug("HTTP response content: " + httpResponse.getContent());
 				_log.debug("HTTP response message: " + httpResponse.getMessage());
 				_log.debug("HTTP response status code: " + httpResponse.getStatusCode());
 			}
 			
 			if (httpResponse.getStatusCode() != 200) {
 				throw new RestException("HTTP Status Code: " + httpResponse.getStatusCode()
-				+ ". HTTP Response Message: " + httpResponse.getMessage() + ". Response Content: " + content);
+				+ ". HTTP Response Message: " + httpResponse.getMessage() + ". Response Content: " + httpResponse.getContent());
 			}
 			
-			MSDynamicsResponse msDynamicsResponse = new MSDynamicsResponse();
-			msDynamicsResponse.setMessage(httpResponse.getStatusCode() + httpResponse.getMessage() + content);
+			MSDynamicsResponse msDynamicsResponse = new MSDynamicsResponse(httpResponse.getStatusCode(), httpResponse.getContent(), httpResponse.getMessage());
 			return msDynamicsResponse;
 			
 		}
 		
 		
 		
-		public HttpInvoker.HttpResponse getMSDynamicsHttpResponse() throws Exception {
+		private HttpInvoker.HttpResponse getMSDynamicsHttpResponse() throws IOException {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
 

@@ -3,4 +3,5 @@ Bundle-SymbolicName: com.liferay.msdynamics.integration.rest.client
 Bundle-Version: 1.0.0
 Export-Package:\
 	com.liferay.msdynamics.integration.rest.client.dto.v1_0,\
-	com.liferay.msdynamics.integration.rest.client.resource.v1_0
+	com.liferay.msdynamics.integration.rest.client.resource.v1_0,\
+	com.liferay.msdynamics.integration.rest.client.exception

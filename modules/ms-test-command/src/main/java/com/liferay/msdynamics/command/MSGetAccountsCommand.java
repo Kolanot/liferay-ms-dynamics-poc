@@ -44,7 +44,7 @@ public class MSGetAccountsCommand {
 		try {
 
 			msDynamicsResponse = imsDynamicsResource.getMSDynamicsAccounts(msDynamicsConfiguration.microsoftDynamicsHost(), msDynamicsConfiguration.microsoftDynamicsOAuth2Token());
-			System.out.println(msDynamicsResponse.getMessage());
+			System.out.println(msDynamicsResponse.getContent());
 
 		} catch (Exception e) {
 			_log.error(e.getMessage());

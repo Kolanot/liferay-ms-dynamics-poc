@@ -1,13 +1,40 @@
 package com.liferay.msdynamics.integration.rest.client.dto.v1_0;
 
-import java.util.Objects;
-
-import com.liferay.msdynamics.integration.rest.client.function.UnsafeSupplier;
-
 /**
  * @author Filipe Afonso
  */
 public class MSDynamicsResponse {
+
+	private int httpCode;
+	private String content;
+	private String message;
+	
+	public MSDynamicsResponse() {
+		super();
+	}
+
+	public MSDynamicsResponse(int httpCode, String content, String message) {
+		super();
+		this.httpCode = httpCode;
+		this.content = content;
+		this.message = message;
+	}
+
+	public int getHttpCode() {
+		return httpCode;
+	}
+
+	public void setHttpCode(int httpCode) {
+		this.httpCode = httpCode;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 
 	public String getMessage() {
 		return message;
@@ -17,42 +44,45 @@ public class MSDynamicsResponse {
 		this.message = message;
 	}
 
-	public void setMessage(UnsafeSupplier<String, Exception> messageUnsafeSupplier) {
-
-		try {
-			message = messageUnsafeSupplier.get();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String message;
-
-	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
-			return true;
-		}
-
-		if (!(object instanceof MSDynamicsResponse)) {
-			return false;
-		}
-
-		MSDynamicsResponse iMediaResponse = (MSDynamicsResponse) object;
-
-		return Objects.equals(toString(), iMediaResponse.toString());
-	}
-
 	@Override
 	public int hashCode() {
-		String string = toString();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		result = prime * result + httpCode;
+		result = prime * result + ((message == null) ? 0 : message.hashCode());
+		return result;
+	}
 
-		return string.hashCode();
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MSDynamicsResponse other = (MSDynamicsResponse) obj;
+		if (content == null) {
+			if (other.content != null)
+				return false;
+		} else if (!content.equals(other.content))
+			return false;
+		if (httpCode != other.httpCode)
+			return false;
+		if (message == null) {
+			if (other.message != null)
+				return false;
+		} else if (!message.equals(other.message))
+			return false;
+		return true;
 	}
 
 	@Override
 	public String toString() {
-		return getMessage();
+		return "MSDynamicsResponse [httpCode=" + httpCode + ", content=" + content + ", message=" + message + "]";
 	}
-
+	
+	
+	
 }
