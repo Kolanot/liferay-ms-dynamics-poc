@@ -135,6 +135,14 @@ public class HttpInvoker {
 		return this;
 	}
 
+	public HttpInvoker token(String token)
+			throws IOException {
+		
+		_token = token;
+		
+		return this;
+	}
+
 	public enum HttpMethod {
 
 		DELETE, GET, PATCH, POST, PUT
@@ -203,6 +211,8 @@ public class HttpInvoker {
 	}
 
 	private HttpInvoker() {
+		this._encodedUserNameAndPassword = null;
+		this._token = null;
 	}
 
 	private void _appendPart(
@@ -308,6 +318,10 @@ public class HttpInvoker {
 			httpURLConnection.setRequestProperty(
 				"Authorization", "Basic " + _encodedUserNameAndPassword);
 		}
+		if (_token != null) {
+			httpURLConnection.setRequestProperty(
+					"Authorization", "Bearer " + _token);
+		}
 
 		if (_contentType != null) {
 			httpURLConnection.setRequestProperty("Content-Type", _contentType);
@@ -411,6 +425,7 @@ public class HttpInvoker {
 	private String _body;
 	private String _contentType;
 	private String _encodedUserNameAndPassword;
+	private String _token;
 	private Map<String, File> _files = new LinkedHashMap<>();
 	private Map<String, String> _headers = new LinkedHashMap<>();
 	private HttpMethod _httpMethod = HttpMethod.GET;

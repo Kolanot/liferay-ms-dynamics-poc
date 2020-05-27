@@ -23,17 +23,9 @@ public interface MSDynamicsConfiguration {
 			deflt = "",
 			description = "configuration.ms.dynamics.token.desc",
 			name = "configuration.ms.dynamics.token",
-			required = true, type = Meta.Type.String
+			required = false, type = Meta.Type.String
 		)
-		public String microsoftDynamicsOAuth2Token();
-
-	@Meta.AD(
-			deflt = "https://liferay.crm.dynamics.com/api/data/v9.0/",
-			description = "configuration.ms.dynamics.url.desc",
-			name = "configuration.ms.dynamics.url",
-			required = true, type = Meta.Type.String
-			)
-	public String microsoftDynamicsURL();
+	public String microsoftDynamicsOAuth2Token();
 
 	@Meta.AD(
 			deflt = "liferay.crm.dynamics.com",

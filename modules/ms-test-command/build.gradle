@@ -1,0 +1,8 @@
+dependencies {
+	compileOnly group: "org.osgi", name: "org.osgi.core"
+	compileOnly group: "org.osgi", name: "osgi.cmpn"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel"
+	
+	compile project(":modules:ms-dynamics-config")
+	compile project(":modules:ms-dynamics-integration-rest-client")
+}
