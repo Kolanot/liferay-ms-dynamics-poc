@@ -37,7 +37,7 @@ public class MSGetAccountsCommand {
 		System.out.println("TOKEN: " + msDynamicsConfiguration.microsoftDynamicsOAuth2Token());
 		System.out.println("HOST: " + msDynamicsConfiguration.microsoftDynamicsHost());
 		
-		getAccounts(msDynamicsConfiguration.microsoftDynamicsHost(), msDynamicsConfiguration.microsoftDynamicsOAuth2Token());
+		System.out.println(getAccounts(msDynamicsConfiguration.microsoftDynamicsHost(), msDynamicsConfiguration.microsoftDynamicsOAuth2Token()));
 		
 	}
 	
@@ -58,8 +58,8 @@ public class MSGetAccountsCommand {
 		builder.header("Host", host);
 //		builder.header("User-Agent", "PostmanRuntime/7.24.0");
 		builder.header("Accept", "*/*");
-		builder.header("Accept-Encoding", "gzip, deflate, br");
-		builder.header("Connection", "keep-alive");
+//		builder.header("Accept-Encoding", "gzip, deflate, br");
+//		builder.header("Connection", "keep-alive");
 //		builder.header("Postman-Token", "068ff986-822c-428f-8d13-46c3176298c3");
 //		builder.header("Cookie", "ARRAffinity=0ee99854aa933c9667ea58c0c10ac070465ba8e1f711ec984f2f645f512e5531; ReqClientId=3643a996-144c-4081-8813-cf8c3e321775; orgId=4bf9de81-9ab3-45a1-8359-c62413965a34");
 
