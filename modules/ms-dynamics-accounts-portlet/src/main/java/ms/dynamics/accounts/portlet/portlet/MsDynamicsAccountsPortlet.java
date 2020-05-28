@@ -23,7 +23,6 @@ import com.liferay.msdynamics.integration.rest.client.dto.v1_0.MSDynamicsRespons
 import com.liferay.msdynamics.integration.rest.client.exception.RestException;
 import com.liferay.msdynamics.integration.rest.client.resource.v1_0.IMSDynamicsResource;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
@@ -58,7 +57,7 @@ public class MsDynamicsAccountsPortlet extends MVCPortlet {
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
 			throws IOException, PortletException {
-		super.doView(renderRequest, renderResponse);
+		
 		
 		// Try to get MS Dynamic accounts
 		MSDynamicsConfiguration msDynamicsConfiguration;
@@ -86,21 +85,22 @@ public class MsDynamicsAccountsPortlet extends MVCPortlet {
 
 			List<String> headerNames = Collections.emptyList();
 
-			String emptyResultsMessage = LanguageUtil.get(themeDisplay.getLocale(), "no-accounts-were-found");
 
 			SearchContainer<MSAccount> searchContainer =
-				new SearchContainer<>(
-					renderRequest, iteratorURL, headerNames, emptyResultsMessage);
+				new SearchContainer<MSAccount>(renderRequest, renderResponse.createRenderURL(), null, null);
 
 			
+			searchContainer.setEmptyResultsMessage("no-accounts-were-found");
 			searchContainer.setResults(accounts);
 			searchContainer.setTotal(accounts.size());
 
 			renderRequest.setAttribute("accountsSearchContainer", searchContainer);
+			
+
 		}
 		
 		
-		
+		super.doView(renderRequest, renderResponse);
 	}
 	
 	private List<MSAccount> parseMSDynamicsAccounts(String content) {
