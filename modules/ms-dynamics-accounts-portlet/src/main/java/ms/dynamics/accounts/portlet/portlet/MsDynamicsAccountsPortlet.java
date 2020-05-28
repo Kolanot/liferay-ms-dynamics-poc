@@ -37,109 +37,95 @@ import ms.dynamics.accounts.portlet.data.MSAccount;
 /**
  * @author fafonso
  */
-@Component(
-	immediate = true,
-	property = {
-		"com.liferay.portlet.display-category=category.ms",
-		"com.liferay.portlet.header-portlet-css=/css/main.css",
-		"com.liferay.portlet.instanceable=true",
-		"javax.portlet.display-name=MsDynamicsAccounts",
-		"javax.portlet.init-param.template-path=/",
+@Component(immediate = true, property = { "com.liferay.portlet.display-category=category.ms",
+		"com.liferay.portlet.header-portlet-css=/css/main.css", "com.liferay.portlet.instanceable=true",
+		"javax.portlet.display-name=MsDynamicsAccounts", "javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/view.jsp",
 		"javax.portlet.name=" + MsDynamicsAccountsPortletKeys.MSDYNAMICSACCOUNTS,
 		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user"
-	},
-	service = Portlet.class
-)
+		"javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class MsDynamicsAccountsPortlet extends MVCPortlet {
-	
+
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
 			throws IOException, PortletException {
-		
-		
+
 		// Try to get MS Dynamic accounts
 		MSDynamicsConfiguration msDynamicsConfiguration;
 		MSDynamicsResponse msDynamicsResponse = null;
 		try {
 			msDynamicsConfiguration = _configurationProvider.getSystemConfiguration(MSDynamicsConfiguration.class);
-		
+
 			IMSDynamicsResource.Builder builder = IMSDynamicsResource.builder();
 			IMSDynamicsResource imsDynamicsResource = builder.build();
 
-			msDynamicsResponse = imsDynamicsResource.getMSDynamicsAccounts(msDynamicsConfiguration.microsoftDynamicsHost(), msDynamicsConfiguration.microsoftDynamicsOAuth2Token());
+			msDynamicsResponse = imsDynamicsResource.getMSDynamicsAccounts(
+					msDynamicsConfiguration.microsoftDynamicsHost(),
+					msDynamicsConfiguration.microsoftDynamicsOAuth2Token(),
+					msDynamicsConfiguration.microsoftDynamicsAccountOwner());
 
 		} catch (RestException | IOException | ConfigurationException e) {
 			_log.error(e.getMessage(), e);
 		}
-		
-		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
 		renderRequest.setAttribute("currentUrl", themeDisplay.getURLCurrent());
-		
+
+		List<MSAccount> accounts = Collections.emptyList();
 		if (msDynamicsResponse != null) {
-			List<MSAccount> accounts = parseMSDynamicsAccounts(msDynamicsResponse.getContent());
-
-			PortletURL iteratorURL= renderResponse.createRenderURL();
-
-			List<String> headerNames = Collections.emptyList();
-
-
-			SearchContainer<MSAccount> searchContainer =
-				new SearchContainer<MSAccount>(renderRequest, renderResponse.createRenderURL(), null, null);
-
-			
-			searchContainer.setEmptyResultsMessage("no-accounts-were-found");
-			searchContainer.setResults(accounts);
-			searchContainer.setTotal(accounts.size());
-
-			renderRequest.setAttribute("accountsSearchContainer", searchContainer);
-			
+			accounts = parseMSDynamicsAccounts(msDynamicsResponse.getContent());
 
 		}
 		
+		SearchContainer<MSAccount> searchContainer = new SearchContainer<MSAccount>(renderRequest,
+				renderResponse.createRenderURL(), null, null);
+		
+		searchContainer.setEmptyResultsMessage("no-accounts-were-found");
+		searchContainer.setResults(accounts);
+		searchContainer.setTotal(accounts.size());
+		
+		renderRequest.setAttribute("accountsSearchContainer", searchContainer);
+
 		
 		super.doView(renderRequest, renderResponse);
 	}
-	
+
 	private List<MSAccount> parseMSDynamicsAccounts(String content) {
 		List<MSAccount> result = new ArrayList<MSAccount>();
-		
+
 		if (StringUtils.isEmpty(content)) {
 			return result;
 		}
-		
+
 		JsonParser parser = new JsonParser();
 		JsonElement jsonTree = parser.parse(content);
-		
-		
-		if(jsonTree.isJsonObject()){
-		    JsonObject jsonObject = jsonTree.getAsJsonObject();
 
+		if (jsonTree.isJsonObject()) {
+			JsonObject jsonObject = jsonTree.getAsJsonObject();
 
-		    JsonElement accounts = jsonObject.get("value");
+			JsonElement accounts = jsonObject.get("value");
 
-		    if(accounts.isJsonArray()){
-		    		for (JsonElement accountJsonElement : accounts.getAsJsonArray()) {
-		    			MSAccount account = new MSAccount(accountJsonElement);
-		    			
-		    			if (_log.isDebugEnabled()) {
-		    				_log.debug(account);
-		    			}
-		    			
-		    			result.add(account);
-		    		}
-		    }
+			if (accounts.isJsonArray()) {
+				for (JsonElement accountJsonElement : accounts.getAsJsonArray()) {
+					MSAccount account = new MSAccount(accountJsonElement);
+
+					if (_log.isDebugEnabled()) {
+						_log.debug(account);
+					}
+
+					result.add(account);
+				}
+			}
 
 		}
-		
+
 		return result;
 	}
-	
+
 	@Reference
 	protected ConfigurationProvider _configurationProvider;
 
 	private static final Log _log = LogFactoryUtil.getLog(MsDynamicsAccountsPortlet.class);
-	
+
 }

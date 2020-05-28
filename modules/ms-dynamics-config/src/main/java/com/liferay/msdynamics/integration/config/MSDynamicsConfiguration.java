@@ -28,6 +28,14 @@ public interface MSDynamicsConfiguration {
 	public String microsoftDynamicsOAuth2Token();
 
 	@Meta.AD(
+			deflt = "826b61b3-6b8c-4b2f-9837-bdac5fe0ee89",
+			description = "configuration.ms.dynamics.account.owner.desc",
+			name = "configuration.ms.dynamics.account.owner",
+			required = false, type = Meta.Type.String
+			)
+	public String microsoftDynamicsAccountOwner();
+
+	@Meta.AD(
 			deflt = "liferay.crm.dynamics.com",
 			description = "configuration.ms.dynamics.host.desc",
 			name = "configuration.ms.dynamics.host",

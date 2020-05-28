@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.annotation.Generated;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.liferay.msdynamics.integration.rest.client.dto.v1_0.MSDynamicsResponse;
 import com.liferay.msdynamics.integration.rest.client.exception.RestException;
 import com.liferay.msdynamics.integration.rest.client.http.HttpInvoker;
@@ -25,6 +27,8 @@ public interface IMSDynamicsResource {
 	}
 	
 	public MSDynamicsResponse getMSDynamicsAccounts(String host, String token) throws IOException, RestException;
+	
+	public MSDynamicsResponse getMSDynamicsAccounts(String host, String token, String ownerId) throws IOException, RestException;
 
 //	public MSDynamicsResponse postIMediaResponse(MSDynamicsResponse iMediaResponse) throws Exception;
 //
@@ -95,12 +99,25 @@ public interface IMSDynamicsResource {
 		
 		private static final String API_ENDPOINT = "/api/data/v9.0/";
 		private static final String RESOURCE_ACCOUNT = "accounts";
+		private static final String RESOURCE_ACCOUNT_FILTER_BY_OWNER = "?$filter=_ownerid_value%20eq%20";
 		
-
 		public MSDynamicsResponse getMSDynamicsAccounts(String host, String token) throws IOException, RestException {
+			return getMSDynamicsAccounts(host, token, null);
+		}
+
+		public MSDynamicsResponse getMSDynamicsAccounts(String host, String token, String ownerId) throws IOException, RestException {
+			
+			StringBuilder url = new StringBuilder(host);
+			url.append(API_ENDPOINT);
+			url.append(RESOURCE_ACCOUNT);
+			
+			if (!StringUtils.isEmpty(ownerId)) {
+				url.append(RESOURCE_ACCOUNT_FILTER_BY_OWNER);
+				url.append(ownerId);
+			}
 			
 			// Setup the request
-			_builder.endpoint(host + API_ENDPOINT + RESOURCE_ACCOUNT, -1, "https");
+			_builder.endpoint(url.toString(), -1, "https");
 			
 			// Set authoriaztion
 			_builder.authentication(token);
@@ -110,7 +127,7 @@ public interface IMSDynamicsResource {
 			_builder.header("OData-Version", "4.0");
 			_builder.header("Content-Type", "application/json");
 			_builder.header("Host", host);
-			_builder.header("Accept", "*/*");
+			_builder.header("Accept", "application/json");
 
 			// Set body content of post request.
 			// No need to set info in the body for this case
