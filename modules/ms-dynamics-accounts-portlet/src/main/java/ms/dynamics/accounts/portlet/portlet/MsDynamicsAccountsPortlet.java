@@ -70,8 +70,6 @@ public class MsDynamicsAccountsPortlet extends MVCPortlet {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-		renderRequest.setAttribute("currentUrl", themeDisplay.getURLCurrent());
-
 		List<MSAccount> accounts = Collections.emptyList();
 		if (msDynamicsResponse != null) {
 			accounts = parseMSDynamicsAccounts(msDynamicsResponse.getContent());
