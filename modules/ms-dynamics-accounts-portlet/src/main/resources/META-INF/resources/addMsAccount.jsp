@@ -18,6 +18,8 @@ String msAccountMail = ParamUtil.getString(request, "msAccountMail");
 <aui:form action="<%= addMSAccountActionURL %>" cssClass="container-fluid-1280" method="post" name="fm">
 	<aui:input name="redirect" type="hidden" value="${themeDisplay.getURLCurrent()}" />
 	<aui:input name="backURL" type="hidden" value="backURL" />
+	
+	<liferay-ui:error exception="<%= RestException.class %>" message="problem-connecting-to-ms" />
 
 
 	<div class="lfr-form-content">
@@ -30,8 +32,6 @@ String msAccountMail = ParamUtil.getString(request, "msAccountMail");
 						<aui:input label="phone" name="msAccountPhone" id="msAccountPhone" type="text" value="<%= msAccountPhone %>"/>
 
 						<aui:input label="city" name="msAccountCity" id="msAccountCity" type="text" value="<%= msAccountCity %>"/>
-
-						<aui:input label="mail" name="msAccountMail" id="msAccountMail" type="text" value="<%= msAccountMail %>"/>
 
 					</div>
 

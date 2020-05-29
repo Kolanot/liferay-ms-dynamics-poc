@@ -6,4 +6,5 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel"	
 
 	compileInclude group: "org.apache.commons", name: "commons-lang3"
+	compileInclude group: "com.google.code.gson", name: "gson"
 }
