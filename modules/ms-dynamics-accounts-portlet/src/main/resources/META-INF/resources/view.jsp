@@ -9,6 +9,7 @@ SearchContainer msAccountsSearchContainer = (SearchContainer) request.getAttribu
 <liferay-portlet:renderURL var="addMSAccountRenderURL" windowState="<%= LiferayWindowState.NORMAL.toString() %>">
 	<liferay-portlet:param name="mvcRenderCommandName" value="addAccount" />
 	<liferay-portlet:param name="redirect" value="${themeDisplay.getURLCurrent()}" />
+	<liferay-portlet:param name="backURL" value="${themeDisplay.getURLCurrent()}" />
 </liferay-portlet:renderURL>
 
 

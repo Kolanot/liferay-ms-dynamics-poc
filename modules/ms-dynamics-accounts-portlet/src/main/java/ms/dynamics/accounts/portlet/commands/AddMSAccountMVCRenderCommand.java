@@ -12,7 +12,7 @@
  * details.
  */
 
-package ms.dynamics.accounts.portlet.commands.render;
+package ms.dynamics.accounts.portlet.commands;
 
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
@@ -21,6 +21,7 @@ import javax.portlet.RenderResponse;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import ms.dynamics.accounts.portlet.constants.MsDynamicsAccountsPortletKeys;
 
@@ -40,7 +41,7 @@ public class AddMSAccountMVCRenderCommand implements MVCRenderCommand {
 	public String render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
-
+		
 		return "/addMsAccount.jsp";
 	}
 
