@@ -16,7 +16,8 @@
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil" %>
 
 <%@ page import="ms.dynamics.accounts.portlet.constants.MsDynamicsAccountsPortletKeys" %>
-<%@ page import="ms.dynamics.accounts.portlet.data.MSAccount" %>
+
+<%@ page import="com.liferay.msdynamics.integration.rest.client.data.MSAccount" %>
 <%@ page import="com.liferay.msdynamics.integration.rest.client.exception.RestException" %>
 
 <liferay-theme:defineObjects />

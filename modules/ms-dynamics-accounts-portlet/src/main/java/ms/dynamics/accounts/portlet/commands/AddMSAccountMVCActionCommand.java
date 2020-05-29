@@ -60,7 +60,8 @@ public class AddMSAccountMVCActionCommand extends BaseMVCActionCommand {
 					msDynamicsConfiguration.microsoftDynamicsOAuth2Token(), msAccountName, msAccountPhone,
 					msAccountMail, msAccountCity);
 			
-
+			String redirect = ParamUtil.getString(actionRequest, "backURL");
+			sendRedirect(actionRequest, actionResponse, redirect);
 		}
 
 		catch (RestException e) {

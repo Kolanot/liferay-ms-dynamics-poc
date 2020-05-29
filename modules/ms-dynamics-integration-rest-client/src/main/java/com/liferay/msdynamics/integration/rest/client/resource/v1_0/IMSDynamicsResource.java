@@ -10,7 +10,7 @@ import javax.annotation.Generated;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.liferay.msdynamics.integration.rest.client.data.MSAccount;
 import com.liferay.msdynamics.integration.rest.client.dto.v1_0.MSDynamicsResponse;
 import com.liferay.msdynamics.integration.rest.client.exception.RestException;
 import com.liferay.msdynamics.integration.rest.client.http.HttpInvoker;
@@ -127,9 +127,10 @@ public interface IMSDynamicsResource {
 			_builder.header("Accept", "application/json");
 
 			// Set body content of post request.
-			String body = "";
-			
-			HttpInvoker.HttpResponse httpResponse = getMSDynamicsHttpResponse(HttpInvoker.HttpMethod.POST, body, "application/json");
+			MSAccount newAccount = new MSAccount(name, phone, city, mail);
+			Gson gson = new Gson();
+
+			HttpInvoker.HttpResponse httpResponse = getMSDynamicsHttpResponse(HttpInvoker.HttpMethod.POST, gson.toJson(newAccount), "application/json");
 
 			if (_log.isDebugEnabled()) {
 				_log.debug("HTTP response content: " + httpResponse.getContent());
@@ -137,7 +138,7 @@ public interface IMSDynamicsResource {
 				_log.debug("HTTP response status code: " + httpResponse.getStatusCode());
 			}
 
-			if (httpResponse.getStatusCode() != 200) {
+			if (httpResponse.getStatusCode() > 299) {
 				throw new RestException(
 						"HTTP Status Code: " + httpResponse.getStatusCode() + ". HTTP Response Message: "
 								+ httpResponse.getMessage() + ". Response Content: " + httpResponse.getContent());

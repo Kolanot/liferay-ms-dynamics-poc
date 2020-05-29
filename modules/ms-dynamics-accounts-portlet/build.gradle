@@ -15,7 +15,7 @@ dependencies {
 	compileOnly group: "jstl", name: "jstl"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations"
 	
-	compileInclude group: "com.google.code.gson", name: "gson"
+	compileOnly group: "com.google.code.gson", name: "gson"
 	compileInclude group: 'org.apache.commons', name: 'commons-lang3'
 	
 	

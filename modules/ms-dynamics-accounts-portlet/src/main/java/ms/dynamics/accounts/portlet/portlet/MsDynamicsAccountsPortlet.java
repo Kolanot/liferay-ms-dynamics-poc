@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
-import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
@@ -19,6 +18,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.liferay.msdynamics.integration.config.MSDynamicsConfiguration;
+import com.liferay.msdynamics.integration.rest.client.data.MSAccount;
 import com.liferay.msdynamics.integration.rest.client.dto.v1_0.MSDynamicsResponse;
 import com.liferay.msdynamics.integration.rest.client.exception.RestException;
 import com.liferay.msdynamics.integration.rest.client.resource.v1_0.IMSDynamicsResource;
@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import ms.dynamics.accounts.portlet.constants.MsDynamicsAccountsPortletKeys;
-import ms.dynamics.accounts.portlet.data.MSAccount;
 
 /**
  * @author fafonso

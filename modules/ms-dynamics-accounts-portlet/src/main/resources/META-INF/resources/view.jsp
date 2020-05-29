@@ -114,7 +114,7 @@ SearchContainer msAccountsSearchContainer = (SearchContainer) request.getAttribu
 	<liferay-ui:search-container searchContainer="<%= msAccountsSearchContainer %>" id="msAccountsSearchContainer">
 
 		<liferay-ui:search-container-row
-			className="ms.dynamics.accounts.portlet.data.MSAccount"
+			className="com.liferay.msdynamics.integration.rest.client.data.MSAccount"
 			modelVar="msAccount"
 		>
 			<liferay-ui:search-container-column-text
@@ -126,19 +126,19 @@ SearchContainer msAccountsSearchContainer = (SearchContainer) request.getAttribu
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-content"
 				name="phone"
-				property="phone"
+				property="telephone1"
 			/>
 
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-content"
 				name="city"
-				property="city"
+				property="address1_city"
 			/>
 
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-content"
 				name="mail"
-				property="mail"
+				property="emailaddress1"
 			/>
 
 			
