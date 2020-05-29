@@ -100,10 +100,9 @@ SearchContainer msAccountsSearchContainer = (SearchContainer) request.getAttribu
 					</div>
 				</li>
 				<li class="nav-item">
-					<button class="btn btn-primary nav-btn nav-btn-monospaced navbar-breakpoint-down-d-none" type="button">
+					<button class="btn btn-primary nav-btn nav-btn-monospaced navbar-breakpoint-down-d-none" type="button" onclick="window.location.href='<%=addMSAccountRenderURL.toString() %>'">
 						<clay:icon symbol="plus" />
 					</button>
-					
 				</li>
 			</ul>
 		</div>
